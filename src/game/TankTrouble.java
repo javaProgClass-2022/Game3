@@ -1,4 +1,5 @@
 package game;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -109,19 +110,24 @@ public class TankTrouble implements ActionListener {
 
 			g.drawLine(PANW/2, PANH/2 , ball.x + ball.size/2, ball.y + ball.size/2);
 			addObjects(g2);
-			moveAndBounceBall(ball, grid, g2);		
+			moveAndBounceBall(ball, grid, g2);	
+			addPoints();
+			walls(g,g2);
 		}
 	}	
 	
-	public void addPoints(Graphics2D gs) {
+	public void addPoints() {
 		for(int i = 0; i < 8; i++) {
 			for(int j = 0; j < 8; j++) {
 				points[i][j] = new Point(100*j, 100*i);
-				gs.setColor(new Color(0,0,0,50));
-				gs.fillRect(squareW*((7*i+j)%7), squareH*((7*i+j)/7), squareW, squareH);
-				gs.drawRect(squareW*((7*i+j)%7), squareH*((7*i+j)/7), squareW, squareH);
 			}
 		}
+	}
+	
+	public void walls(Graphics g, Graphics2D g2) {
+		g.setColor(Color.GREEN);
+		g2.setStroke(new BasicStroke(10));
+		g.drawLine(points[0][0].x, points[0][0].y, points[1][0].x, points[1][0].y);
 	}
 
 	public void addObjects(Graphics2D gs) {
