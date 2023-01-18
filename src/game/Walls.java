@@ -13,6 +13,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -55,7 +56,7 @@ public class Walls implements ActionListener {
 
 		frame.add(drPanel);
 		frame.pack();
-		frame.setLocationRelativeTo( null );		
+		frame.setLocationRelativeTo(null);		
 		frame.setVisible(true);		
 	}
 
@@ -64,7 +65,7 @@ public class Walls implements ActionListener {
 		timer.start();
 	}
 
-	class Ball extends Rectangle{
+	class Ball extends Rectangle {
 		// int x,y;	//position
 		int vx, vy;	//speed
 		int size = 10;
@@ -143,6 +144,8 @@ public class Walls implements ActionListener {
 		}
 	}
 
+    TankT tank = new TankT();
+
 	class DrawingPanel extends JPanel {
 		DrawingPanel() {
 			this.setBackground(Color.LIGHT_GRAY);
@@ -164,9 +167,14 @@ public class Walls implements ActionListener {
 				g.fillRect(w.x, w.y, w.width, w.height);
 			}	
 			moveAndBounceBall(b1, g2);
+			
+			tank.paintTank(g,g2);
 		}
 	}
-
+	public void keyPressed(KeyEvent k) {
+        int key = k.getKeyCode(); // gets the key that was pressed
+        
+    }
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		drPanel.repaint();

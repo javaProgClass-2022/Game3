@@ -6,18 +6,16 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.AffineTransform;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class TankT extends JPanel implements KeyListener {
 
-    private static final long serialVersionUID = 1L;
-    private int xPos = 50;
-    private int yPos = 50;
-    private int speed = 5;
-    private double angle = 0;
+    static int tankX = 50;
+    static int tankY = 50;
+    static int speed = 5;
+    static double angle = 0;
 
     public TankT() {
         setPreferredSize(new Dimension(400, 400));
@@ -25,55 +23,45 @@ public class TankT extends JPanel implements KeyListener {
         setFocusable(true);
     }
 
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g;
+    public void paintTank(Graphics g, Graphics2D g2) {
         g.setColor(Color.RED);
-        AffineTransform oldTransform = g2d.getTransform(); // Save the current transformation
-
-        g2d.rotate(angle, xPos + 25, yPos + 25); // Rotate the rectangle around its center
-        g.fillRect(xPos, yPos, 50, 50);  // Draw the rectangle at the current x and y position
-        g2d.setTransform(oldTransform);   // Restore the old transformation
+        g2.rotate(angle, tankX + 25, tankY + 25); // Rotate the rectangle around its center
+        g.fillRect(tankX, tankY, 50, 50);  // Draw the rectangle at the current x and y position
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        int key = e.getKeyCode(); // Get the key that was pressed
-        if (key == KeyEvent.VK_W) {  // Check if the W key was pressed
-            // Calculate the new x and y positions based on the current angle
-            double newX = xPos + speed * Math.cos(angle);
-            double newY = yPos + speed * Math.sin(angle);
-
+        int key = e.getKeyCode(); // gets the key that was pressed
+        if (key == KeyEvent.VK_W) {  // 'W' key was pressed
+            // Calculate new x and y positions based on the current angle
+            double newX = tankX + speed * Math.cos(angle);
+            double newY = tankY + speed * Math.sin(angle);
+            
             // Update the x and y positions
-            xPos = (int) newX;
-            yPos = (int) newY;
+            tankX = (int) newX;
+            tankY = (int) newY;
         }
 
-        if (key == KeyEvent.VK_S) {    // Check if the S key was pressed
-
-            // Calculate the new x and y positions based on the current angle
-            double newX = xPos - speed * Math.cos(angle);
-            double newY = yPos - speed * Math.sin(angle);
-
-            // Update the x and y positions
-            xPos = (int) newX;
-            yPos = (int) newY;
+        if (key == KeyEvent.VK_S) {    // 'S' key was pressed
+            double newX = tankX - speed * Math.cos(angle);
+            double newY = tankY - speed * Math.sin(angle);
+            
+            tankX = (int) newX;
+            tankY = (int) newY;
         }
 
-        if (key == KeyEvent.VK_A) {    // Check if the A key was pressed
+        if (key == KeyEvent.VK_A) {    // 'A' key was pressed
 
             // Decrease the angle of the rectangle by a small amount
         	angle -= 0.1;
         }
         
-        if (key == KeyEvent.VK_D) {     // Check if the D key was pressed
+        if (key == KeyEvent.VK_D) {     // 'D' key was pressed
 
             // Increase the angle of the rectangle by a small amount
             angle += 0.1;
         }
         repaint();   // Repaint the panel to update the position and rotation of the rectangle
-
     }
 
     @Override
