@@ -13,6 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import java.awt.event.KeyEvent;
+
 import java.awt.geom.AffineTransform;
 
 import javax.swing.JFrame;
@@ -109,7 +111,7 @@ public class TankGame implements ActionListener {
 			this.y = y;
 			this.width = 20;
 			this.height = 30;
-			this.angle = 90;
+			this.angle = 45;
 		}
 		
 	}
@@ -132,7 +134,7 @@ public class TankGame implements ActionListener {
 			bullets.add(new Ball(false));
 		}
 
-		fire(100,100,30,true);
+		//fire(100,100,30,true);
 	}
 
 	public void createMap(){
@@ -175,6 +177,14 @@ public class TankGame implements ActionListener {
 
 	public void moveTank(){
 
+		tank1.angle += 5;
+		// int key = e.getKeyCode();
+		// if (key == KeyEvent.VK_A) {
+        //     // Decrease the angle of the rectangle by a small amount
+        // 	tank1.angle += 15;
+		// 	System.out.println("pressed");
+        // }
+		
 	}
 
     class DrawingPanel extends JPanel {
@@ -198,11 +208,11 @@ public class TankGame implements ActionListener {
 			AffineTransform oldTransform = g2.getTransform();
 
 			// Rotate the rectangle around its center
-			g2.rotate(tank1.angle, tank1.x + tank1.width, tank1.y + tank1.height);
+			g2.rotate(Math.toRadians(tank1.angle), tank1.x + tank1.width/2, tank1.y + tank1.height/2);
             g.fillRect(tank1.x, tank1.y, tank1.width, tank1.height);
 			g2.setTransform(oldTransform);
 
-			g2.rotate(tank1.angle, tank1.x + tank1.width, tank1.y + tank1.height);
+			g2.rotate(Math.toRadians(tank2.angle), tank2.x + tank2.width, tank2.y + tank2.height);
 			g.fillRect(tank2.x, tank2.y, tank2.width, tank2.height);
 			g2.setTransform(oldTransform);
 			moveTank();
@@ -225,7 +235,7 @@ public class TankGame implements ActionListener {
 				b.vx = Math.cos(Math.toRadians(angle))*5;
 				b.vy = Math.sin(Math.toRadians(angle))*5;
 				
-				System.out.println(Double.toString(b.vx));
+				//System.out.println(Double.toString(b.vx));
 				break;
 			}
 		}
