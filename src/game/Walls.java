@@ -13,6 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import java.awt.geom.AffineTransform;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -29,19 +31,19 @@ import javax.swing.SwingUtilities;
 
 import game.MainGame.DrawingPanel;
 
-public class Walls implements ActionListener {
+public class TankGame implements ActionListener {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				new Walls(); 
+				new TankGame(); 
 			}
 		});		
     }
 
     final static int PANW = 500;
 	final static int PANH = 400;
-	final static int TIMERSPEED = 1;
+	final static int TIMERSPEED = 10;
 
     /***** instance variables (global) *****/
 	DrawingPanel drPanel = new DrawingPanel();
@@ -65,16 +67,20 @@ public class Walls implements ActionListener {
 
     class Ball extends Rectangle{
 		// int x,y;	//position
-		int vx, vy;	//speed
-		int size = 10;
+		double vx, vy = 0;	//speed
+		int size = 5;
+		boolean intersecting;
+		boolean player1sbullet;
 
-		Ball(int x, int y, int vx, int vy){
-			this.x = x;
-			this.y = y;
+		Ball( boolean player1sbullet){
+			this.x = -10;
+			this.y = -10;
             this.width = size;
             this.height = size;
 			this.vx = vx; //move this many pixels each time
 			this.vy = vy;
+			this.intersecting = false;
+			this.player1sbullet = player1sbullet;
 		}
 	}
 
@@ -92,59 +98,83 @@ public class Walls implements ActionListener {
                 this.width = 100;
                 this.height = 2;
             }
-
 		}
 	}
 	
-	
+	class Tank extends Rectangle{
+
+		int angle;
+		Tank(int x, int y){
+			this.x = x;
+			this.y = y;
+			this.width = 20;
+			this.height = 30;
+			this.angle = 90;
+		}
+		
+	}
 	
     ArrayList<Wall> walls = new ArrayList<Wall>();
     ArrayList<Ball> bullets = new ArrayList<Ball>();
-    
-    Ball b1 = new Ball(200,300,3,2);
-    Wall w1 = new Wall(200,200, true);
+	Tank tank1 = new Tank(100,100);
+	Tank tank2 = new Tank(200,100);
 
-    Walls() {
+    TankGame() {
 		createAndShowGUI();
 		startTimer();
+		createMap();
 
-        bullets.add(b1);
-        walls.add( w1 );
-        walls.add( new Wall(200,200, false) );
+		for (int i = 0;i<30;i++){  //creats 30 bullets for player 1 off screen
+			bullets.add(new Ball(true));
+		}
 
-        // for(Rectangle w : walls){
-        //     System.out.println(w.x+", "+w.y+", "+w.width+", "+w.height+", ");
-        // }
+		for (int i = 0;i<30;i++){  //creats 30 bullets for player 2 off screen
+			bullets.add(new Ball(false));
+		}
+
+		fire(100,100,30,true);
 	}
 
-    public void moveAndBounceBall(Ball b, Graphics g) {
-		b.x += b.vx; 
-		b.y += b.vy;
+	public void createMap(){
+		walls.add( new Wall(200,200, true) );
+        walls.add( new Wall(250,200, false) );
+	}
 
-		if (b.x + b.size < 0 ||b.x + b.size > PANW) {
-			b.vx *= -1; // teleport to the other side
-		}  
+    public void moveAndBounceBall(Ball b) {
 
-		if (b.y < 0 && b.vy < 0) { 
-			b.vy *= -1;// bounce off the top if it's moving up
-			//b.y -= b.vy; // undo the last move  <<< this may not be necessary
-		}
-
-		if (b.y + b.size > PANH  || b.y + b.size < 0) { //bounce off bottom
-			b.vy *= -1;
-			//b.y -= b.vy; // undo the last move
-		}
-
-
-        for(Wall w : walls){
-            if (w.intersects(b)){
+		for(Wall w : walls){
+            if (w.intersects(b) && !b.intersecting){
                 if (w.v){
                     b.vx *= -1;
                 }else{
                     b.vy *= -1;
                 }
-            }
+				b.intersecting = true;
+            }else{
+				b.intersecting = false;
+			}
         }
+
+		b.x += b.vx; 
+		b.y += b.vy;
+
+		if (b.x + b.size < 0 ||b.x + b.size > PANW) {
+			b.vx *= -1; 
+		}  
+
+		// if (b.y < 0) { 
+		// 	b.vy *= -1;// bounce off the top if it's moving up
+		// 	//b.y -= b.vy; // undo the last move  <<< this may not be necessary
+		// }
+
+		if (b.y + b.size > PANH  || b.y + b.size < 0) { //bounce off bottom
+			b.vy *= -1;
+		}
+        
+	}
+
+	public void moveTank(){
+
 	}
 
     class DrawingPanel extends JPanel {
@@ -162,12 +192,42 @@ public class Walls implements ActionListener {
 			g2.setStroke(new BasicStroke(2));			
 			g.drawString("Here is your drawing panel", 100,100);
 			
-            //g.fillRect(wall1.x, wall1.y, wall1.w, wall1.h);
-			g.fillOval(b1.x, b1.y, 10,10);	
+
+
+			// Save the current transformation
+			AffineTransform oldTransform = g2.getTransform();
+
+			// Rotate the rectangle around its center
+			g2.rotate(tank1.angle, tank1.x + tank1.width, tank1.y + tank1.height);
+            g.fillRect(tank1.x, tank1.y, tank1.width, tank1.height);
+			g2.setTransform(oldTransform);
+
+			g2.rotate(tank1.angle, tank1.x + tank1.width, tank1.y + tank1.height);
+			g.fillRect(tank2.x, tank2.y, tank2.width, tank2.height);
+			g2.setTransform(oldTransform);
+			moveTank();
+			
             for(Rectangle w : walls){
                 g.fillRect(w.x, w.y, w.width, w.height);
-            }	
-            moveAndBounceBall(b1, g2);
+            }
+			for(Ball b : bullets){	
+				g.fillOval(b.x, b.y, b.width,b.height);	
+            	moveAndBounceBall(b);
+			}
+		}
+	}
+
+	public void fire(int x, int y, int angle, boolean player1sbullet){
+		for(Ball b : bullets){	
+			if (b.player1sbullet==player1sbullet && b.vx==0 && b.vy==0){
+				b.x=x;
+				b.y=y;
+				b.vx = Math.cos(Math.toRadians(angle))*5;
+				b.vy = Math.sin(Math.toRadians(angle))*5;
+				
+				System.out.println(Double.toString(b.vx));
+				break;
+			}
 		}
 	}
 
