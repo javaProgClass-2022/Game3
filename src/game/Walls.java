@@ -81,6 +81,8 @@ public class AnimationAndKeys2 extends JFrame implements KeyListener, ActionList
 		double xx = 100;
 		double yy = 200;
 		Tank(int x, int y){
+			this.xx = x;
+			this.yy = y;
 			this.angle = 90;
 			this.x = x;
 			this.y = y;
@@ -113,17 +115,35 @@ public class AnimationAndKeys2 extends JFrame implements KeyListener, ActionList
 		window.setVisible(true);
 	}
 	
+
+	boolean checkTankintersect(Tank tank, boolean wallIsVertical){
+		for(Wall w : walls){
+			if (w.intersects(tank) && w.v == wallIsVertical){
+				return false;
+			}
+		}
+		return true;
+	}
+
 	// With this method, two keys can be down at once allowing smooth diagonal movement
 	void moveTank() {
 		if (isKeyDown(KeyEvent.VK_A)) tank1.angle-=5;		
 		if (isKeyDown(KeyEvent.VK_D)) tank1.angle+=5;
 		if (isKeyDown(KeyEvent.VK_W)){
-			tank1.yy +=Math.cos(Math.toRadians(tank1.angle))*2;
-			tank1.xx -=Math.sin(Math.toRadians(tank1.angle))*2;
+			if(checkTankintersect(tank1, false)){
+				tank1.yy +=Math.cos(Math.toRadians(tank1.angle))*2;
+			}
+			if(checkTankintersect(tank1, true)){
+				tank1.xx -=Math.sin(Math.toRadians(tank1.angle))*2;
+			}
 		}
 		if (isKeyDown(KeyEvent.VK_S)) {
-			tank1.yy -=Math.cos(Math.toRadians(tank1.angle))*2;
-			tank1.xx +=Math.sin(Math.toRadians(tank1.angle))*2;
+			if(checkTankintersect(tank1, false)){
+				tank1.yy -=Math.cos(Math.toRadians(tank1.angle))*2;
+			}
+			if(checkTankintersect(tank1, true)){
+				tank1.xx +=Math.sin(Math.toRadians(tank1.angle))*2;
+			}
 		}
 		if (isKeyDown(KeyEvent.VK_C)) fire(tank1.x+tank1.width/2, tank1.y+tank1.height/2, tank1.angle+90, true);
 
@@ -189,22 +209,6 @@ public class AnimationAndKeys2 extends JFrame implements KeyListener, ActionList
             }else{
 				b.intersecting = false;
 			}
-
-			if (w.intersects(tank1)){
-                if (w.v){
-                    tank1.xx = w.x;
-                }else{
-                    tank1.yy = w.y;
-                }
-            }
-
-			if (w.intersects(tank2)){
-                if (w.v){
-                    tank2.xx = w.x;
-                }else{
-                    tank2.yy = w.y;
-                }
-            }
         }
 
 		b.x += b.vx; 
