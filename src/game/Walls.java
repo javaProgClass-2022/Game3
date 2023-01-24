@@ -1,4 +1,4 @@
-package Graphics;
+package game;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -23,7 +23,7 @@ import javax.swing.Timer;
 // import Graphics.TankGame.Tank;
 // import Graphics.TankGame.Wall;
 
-public class AnimationAndKeys2 extends JFrame implements KeyListener, ActionListener {
+public class Walls extends JFrame implements KeyListener, ActionListener {
 	static final int PANW = 500;
 	static final int PANH = 400;
 	static final int SLEEPTIME = 10;	//in milliseconds
@@ -132,7 +132,7 @@ public class AnimationAndKeys2 extends JFrame implements KeyListener, ActionList
     ArrayList<Ball> bulletCounter = new ArrayList<Ball>();
 
     
-    AnimationAndKeys2() throws InterruptedException { // this exception is required for Thread.sleep()
+    Walls() throws InterruptedException { // this exception is required for Thread.sleep()
 		createGUI();
 		startTimer();
 		createMap();
@@ -288,6 +288,6 @@ public class AnimationAndKeys2 extends JFrame implements KeyListener, ActionList
     }	  
 
 	public static void main(String[] args) throws InterruptedException {
-		new AnimationAndKeys2();
+		new Walls();
 	}
 }
