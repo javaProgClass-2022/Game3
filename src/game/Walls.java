@@ -1,4 +1,4 @@
-package game;
+package Graphics;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -23,7 +23,7 @@ import javax.swing.Timer;
 // import Graphics.TankGame.Tank;
 // import Graphics.TankGame.Wall;
 
-public class Walls extends JFrame implements KeyListener, ActionListener {
+public class AnimationAndKeys2 extends JFrame implements KeyListener, ActionListener {
 	static final int PANW = 500;
 	static final int PANH = 400;
 	static final int SLEEPTIME = 10;	//in milliseconds
@@ -83,7 +83,7 @@ public class Walls extends JFrame implements KeyListener, ActionListener {
 		Tank(int x, int y){
 			this.xx = x;
 			this.yy = y;
-			this.angle = 90;
+			this.angle = 0;
 			this.x = x;
 			this.y = y;
 			this.width = 20;
@@ -119,10 +119,10 @@ public class Walls extends JFrame implements KeyListener, ActionListener {
 	boolean checkTankintersect(Tank tank, boolean wallIsVertical){
 		for(Wall w : walls){
 			if (w.intersects(tank) && w.v == wallIsVertical){
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	// With this method, two keys can be down at once allowing smooth diagonal movement
@@ -130,19 +130,23 @@ public class Walls extends JFrame implements KeyListener, ActionListener {
 		if (isKeyDown(KeyEvent.VK_A)) tank1.angle-=5;		
 		if (isKeyDown(KeyEvent.VK_D)) tank1.angle+=5;
 		if (isKeyDown(KeyEvent.VK_W)){
+			tank1.yy += Math.cos(Math.toRadians(tank1.angle))*2;
+			tank1.xx -= Math.sin(Math.toRadians(tank1.angle))*2;
+			if(checkTankintersect(tank1, false)){
+				tank1.yy -=Math.cos(Math.toRadians(tank1.angle))*3;
+			}
+			if(checkTankintersect(tank1, true)){
+				tank1.xx +=Math.sin(Math.toRadians(tank1.angle))*3;
+			}
+		}
+		if (isKeyDown(KeyEvent.VK_S)) {
+			tank1.yy -=Math.cos(Math.toRadians(tank1.angle))*2;
+			tank1.xx +=Math.sin(Math.toRadians(tank1.angle))*2;
 			if(checkTankintersect(tank1, false)){
 				tank1.yy +=Math.cos(Math.toRadians(tank1.angle))*2;
 			}
 			if(checkTankintersect(tank1, true)){
 				tank1.xx -=Math.sin(Math.toRadians(tank1.angle))*2;
-			}
-		}
-		if (isKeyDown(KeyEvent.VK_S)) {
-			if(checkTankintersect(tank1, false)){
-				tank1.yy -=Math.cos(Math.toRadians(tank1.angle))*2;
-			}
-			if(checkTankintersect(tank1, true)){
-				tank1.xx +=Math.sin(Math.toRadians(tank1.angle))*2;
 			}
 		}
 		if (isKeyDown(KeyEvent.VK_C)) fire(tank1.x+tank1.width/2, tank1.y+tank1.height/2, tank1.angle+90, true);
@@ -153,10 +157,22 @@ public class Walls extends JFrame implements KeyListener, ActionListener {
 		if (isKeyDown(KeyEvent.VK_UP)){
 			tank2.yy +=Math.cos(Math.toRadians(tank2.angle))*2;
 			tank2.xx -=Math.sin(Math.toRadians(tank2.angle))*2;
+			if(checkTankintersect(tank2, false)){
+				tank2.yy -=Math.cos(Math.toRadians(tank2.angle))*3;
+			}
+			if(checkTankintersect(tank2, true)){
+				tank2.xx +=Math.sin(Math.toRadians(tank2.angle))*3;
+			}
 		}
 		if (isKeyDown(KeyEvent.VK_DOWN)) {
 			tank2.yy -=Math.cos(Math.toRadians(tank2.angle))*2;
 			tank2.xx +=Math.sin(Math.toRadians(tank2.angle))*2;
+			if(checkTankintersect(tank2, false)){
+				tank2.yy +=Math.cos(Math.toRadians(tank2.angle))*3;
+			}
+			if(checkTankintersect(tank2, true)){
+				tank2.xx -=Math.sin(Math.toRadians(tank2.angle))*3;
+			}
 		}
 		if (isKeyDown(KeyEvent.VK_SPACE)) fire(tank2.x+tank2.width/2, tank2.y+tank2.height/2, tank2.angle+90, false);
 
@@ -172,7 +188,7 @@ public class Walls extends JFrame implements KeyListener, ActionListener {
     ArrayList<Ball> bulletCounter = new ArrayList<Ball>();
 
     
-    Walls() throws InterruptedException { // this exception is required for Thread.sleep()
+    AnimationAndKeys2() throws InterruptedException { // this exception is required for Thread.sleep()
 		createGUI();
 		startTimer();
 		createMap();
@@ -333,6 +349,6 @@ public class Walls extends JFrame implements KeyListener, ActionListener {
     }	  
 
 	public static void main(String[] args) throws InterruptedException {
-		new Walls();
+		new AnimationAndKeys2();
 	}
 }
