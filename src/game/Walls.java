@@ -333,6 +333,6 @@ public class Walls extends JFrame implements KeyListener, ActionListener {
     }	  
 
 	public static void main(String[] args) throws InterruptedException {
-		new AnimationAndKeys2();
+		new Walls();
 	}
 }
