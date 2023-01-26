@@ -1,4 +1,4 @@
-package Graphics;
+package game;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -14,20 +14,23 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
-
+import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import java.io.*;
+import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 
-import Graphics.TankGame.DrawingPanel;
-import Graphics.TankGame.Tank;
-import Graphics.TankGame.Timer1;
+//import Graphics.TankGame.DrawingPanel;
+//import Graphics.TankGame.Tank;
+//import Graphics.TankGame.Timer1;
 
 // import Graphics.TankGame.Ball;
 // import Graphics.TankGame.Tank;
 // import Graphics.TankGame.Wall;
 
-public class AnimationAndKeys2 extends JFrame implements KeyListener {
+public class Walls extends JFrame implements KeyListener {
 	static final int PANW = 500;
 	static final int PANH = 400;
 	static final int SLEEPTIME = 10;	//in milliseconds
@@ -90,23 +93,7 @@ public class AnimationAndKeys2 extends JFrame implements KeyListener {
 		}
 	}
 
-	class Tank extends Rectangle{
-		int angle;
-		int speed;
-		double xx = 100;
-		double yy = 200;
-		Tank(int x, int y){
-			this.xx = x;
-			this.yy = y;
-			this.angle = 0;
-			this.x = x;
-			this.y = y;
-			this.width = 20;
-			this.height = 30;
-			this.angle = 90;
-			this.speed = 5;
-		}	
-	}
+	
 	Tank tank1 = new Tank(100,100);
 	Tank tank2 = new Tank(200,200);
 
@@ -206,7 +193,7 @@ public class AnimationAndKeys2 extends JFrame implements KeyListener {
     ArrayList<Ball> bulletCounter = new ArrayList<Ball>();
 
     
-    AnimationAndKeys2() throws InterruptedException { // this exception is required for Thread.sleep()
+    Walls() throws InterruptedException { // this exception is required for Thread.sleep()
 		createGUI();
 		animationTimer.start();
 		createMap();
@@ -290,11 +277,29 @@ public class AnimationAndKeys2 extends JFrame implements KeyListener {
 
 			// Rotate the rectangle around its center
 			g2.rotate(Math.toRadians(tank1.angle), tank1.x + tank1.width/2, tank1.y + tank1.height/2);
-            g.fillRect(tank1.x, tank1.y, tank1.width, tank1.height);
+            
+			if (tank1.img == null){
+				g.fillRect(tank1.x, tank1.y, tank1.width, tank1.height);
+			}
+			else{
+				g.drawImage(tank1.img2, tank1.x, tank1.y, tank1.width, tank1.height, null);
+
+			}
+
+			//g.fillRect(tank1.x, tank1.y, tank1.width, tank1.height);
 			g2.setTransform(oldTransform);
 
 			g2.rotate(Math.toRadians(tank2.angle), tank2.x + tank2.width/2, tank2.y + tank2.height/2);
-            g.fillRect(tank2.x, tank2.y, tank2.width, tank2.height);
+
+			if (tank1.img == null){
+				g.fillRect(tank2.x, tank2.y, tank2.width, tank2.height);
+			}
+			else{
+				g.drawImage(tank2.img, tank2.x, tank2.y, tank2.width, tank2.height, null);
+
+			}
+
+            //g.fillRect(tank2.x, tank2.y, tank2.width, tank2.height);
 			g2.setTransform(oldTransform);
 			
             for(Rectangle w : walls){
@@ -361,6 +366,22 @@ public class AnimationAndKeys2 extends JFrame implements KeyListener {
 	}
 
 	public static void main(String[] args) throws InterruptedException {
-		new AnimationAndKeys2();
+		new Walls();
 	}
+
+	static BufferedImage loadImage(String filename) {
+		BufferedImage img = null;			
+		try {
+			img = ImageIO.read(new File(filename));
+		} catch (IOException e) {
+			System.out.println(e.toString());
+			JOptionPane.showMessageDialog(null, "An image failed to load: " + filename , "ERROR", JOptionPane.ERROR_MESSAGE);
+		}
+		//DEBUG
+		//if (img == null) System.out.println("null");
+		//else System.out.printf("w=%d, h=%d%n",img.getWidth(),img.getHeight());
+		
+		return img;
+	}
+
 }
