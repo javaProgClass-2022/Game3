@@ -21,6 +21,7 @@ import javax.swing.Timer;
 import java.io.*;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
+import java.lang.Math;
 
 //import Graphics.TankGame.DrawingPanel;
 //import Graphics.TankGame.Tank;
@@ -37,7 +38,7 @@ public class Walls extends JFrame implements KeyListener {
 	static final int TIMERSPEED = 10;
 	static final int delayTime = 50; 
 	int bullets = 30; // bullet counter
-
+	
 
 	Timer animationTimer = new Timer(4, new Timer1());
 	int actualTime1 = 0;
@@ -53,43 +54,6 @@ public class Walls extends JFrame implements KeyListener {
 			actualTime1++;
 			actualTime2++;
 			panel.repaint();
-		}
-	}
-
-    class Ball extends Rectangle{
-		// int x,y;	//position
-		double vx, vy = 0;	//speed
-		int size = 5;
-		boolean intersecting;
-		boolean player1sbullet;
-
-		Ball(boolean player1sbullet){
-			this.x = -10;
-			this.y = -10;
-            this.width = size;
-            this.height = size;
-			this.vx = vx; //move this many pixels each time
-			this.vy = vy;
-			this.intersecting = false;
-			this.player1sbullet = player1sbullet;
-		}
-	}
-
-    class Wall extends Rectangle{
-		//int x,y,width,hight;	//position
-        boolean v = true;
-		Wall(int x, int y, boolean vertical){
-			this.x = x;
-			this.y = y;
-            this.v = vertical;
-			if(vertical) {
-                this.width = 2;
-                this.height = 100;
-            } 
-			else {
-                this.width = 100;
-                this.height = 2;
-            }
 		}
 	}
 
@@ -213,8 +177,29 @@ public class Walls extends JFrame implements KeyListener {
 	}
 
 	public void createMap(){
+		
+
+	}
+
+	public void map1(){
 		walls.add(new Wall(200,200, true));
         walls.add(new Wall(250,200, false));
+	}
+
+	public void map2(){
+		
+	}
+
+	public void map3(){
+		
+	}
+
+	public void map4(){
+		
+	}
+
+	public void map5(){
+		
 	}
 
     public void moveAndBounceBall(Ball b, Tank tank1, Tank tank2) {
