@@ -3,6 +3,7 @@ import java.awt.Rectangle;
 
 class Ball extends Rectangle{
     // int x,y;	//position
+    double xx, yy = -10;
     double vx, vy = 0;	//speed
     int size = 5;
     boolean intersecting;

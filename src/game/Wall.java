@@ -9,12 +9,12 @@ class Wall extends Rectangle{
         this.y = y;
         this.v = vertical;
         if(vertical) {
-            this.width = 2;
+            this.width = 3;
             this.height = 100;
         } 
         else {
             this.width = 100;
-            this.height = 2;
+            this.height = 3;
         }
     }
 }

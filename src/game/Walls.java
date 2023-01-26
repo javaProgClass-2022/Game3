@@ -23,20 +23,16 @@ import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import java.lang.Math;
 
-//import Graphics.TankGame.DrawingPanel;
-//import Graphics.TankGame.Tank;
-//import Graphics.TankGame.Timer1;
-
-// import Graphics.TankGame.Ball;
-// import Graphics.TankGame.Tank;
-// import Graphics.TankGame.Wall;
-
 public class Walls extends JFrame implements KeyListener {
 	static final int PANW = 500;
 	static final int PANH = 400;
 	static final int SLEEPTIME = 10;	//in milliseconds
 	static final int TIMERSPEED = 10;
 	static final int delayTime = 50; 
+	static int blueScore = 0;
+	static int redScore = 0;
+	static String blueScoreSTR = "0";
+	static String redScoreSTR = "0";
 	int bullets = 30; // bullet counter
 	
 
@@ -58,8 +54,8 @@ public class Walls extends JFrame implements KeyListener {
 	}
 
 	
-	Tank tank1 = new Tank(100,100);
-	Tank tank2 = new Tank(200,200);
+	Tank tank1 = new Tank(50,60);
+	Tank tank2 = new Tank(400,300);
 
 
 	void createGUI() {
@@ -68,21 +64,22 @@ public class Walls extends JFrame implements KeyListener {
 		window.setSize(PANW, PANH);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setLocationRelativeTo(null);
+		window.setResizable(false);
 
 		panel = new DrawingPanel();
 		panel.setBackground(Color.WHITE);
 		panel.addKeyListener(this);
 		panel.setFocusable(true);
 		panel.requestFocus();
+		
 
 		window.add(panel);
 		window.setVisible(true);
 	}
-	
 
-	boolean checkTankintersect(Tank tank, boolean wallIsVertical){
+	boolean checkTankintersect(Tank tank){
 		for(Wall w : walls){
-			if (w.intersects(tank) && w.v == wallIsVertical){
+			if (w.intersects(tank)){
 				return true;
 			}
 		}
@@ -94,23 +91,21 @@ public class Walls extends JFrame implements KeyListener {
 		if (isKeyDown(KeyEvent.VK_A)) tank1.angle-=5;		
 		if (isKeyDown(KeyEvent.VK_D)) tank1.angle+=5;
 		if (isKeyDown(KeyEvent.VK_W)){
-			tank1.yy += Math.cos(Math.toRadians(tank1.angle))*2;
-			tank1.xx -= Math.sin(Math.toRadians(tank1.angle))*2;
-			if(checkTankintersect(tank1, false)){
-				tank1.yy -=Math.cos(Math.toRadians(tank1.angle))*3;
-			}
-			if(checkTankintersect(tank1, true)){
-				tank1.xx +=Math.sin(Math.toRadians(tank1.angle))*3;
+			if(checkTankintersect(tank1)){
+				tank1.yy -=Math.cos(Math.toRadians(tank1.angle))*1.5;
+				tank1.xx +=Math.sin(Math.toRadians(tank1.angle))*1.5;
+			}else{
+				tank1.yy += Math.cos(Math.toRadians(tank1.angle))*1.5;
+				tank1.xx -= Math.sin(Math.toRadians(tank1.angle))*1.5;
 			}
 		}
 		if (isKeyDown(KeyEvent.VK_S)) {
-			tank1.yy -=Math.cos(Math.toRadians(tank1.angle))*2;
-			tank1.xx +=Math.sin(Math.toRadians(tank1.angle))*2;
-			if(checkTankintersect(tank1, false)){
-				tank1.yy +=Math.cos(Math.toRadians(tank1.angle))*2;
-			}
-			if(checkTankintersect(tank1, true)){
-				tank1.xx -=Math.sin(Math.toRadians(tank1.angle))*2;
+			if(checkTankintersect(tank1)){
+				tank1.yy +=Math.cos(Math.toRadians(tank1.angle))*1.5;
+				tank1.xx -=Math.sin(Math.toRadians(tank1.angle))*1.5;
+			}else{
+				tank1.yy -= Math.cos(Math.toRadians(tank1.angle))*1.5;
+				tank1.xx += Math.sin(Math.toRadians(tank1.angle))*1.5;
 			}
 		}
 		if (isKeyDown(KeyEvent.VK_C) && actualTime1 > delayTime) {
@@ -122,23 +117,21 @@ public class Walls extends JFrame implements KeyListener {
 		if (isKeyDown(KeyEvent.VK_LEFT)) tank2.angle-=5;		
 		if (isKeyDown(KeyEvent.VK_RIGHT)) tank2.angle+=5;
 		if (isKeyDown(KeyEvent.VK_UP)){
-			tank2.yy +=Math.cos(Math.toRadians(tank2.angle))*2;
-			tank2.xx -=Math.sin(Math.toRadians(tank2.angle))*2;
-			if(checkTankintersect(tank2, false)){
-				tank2.yy -=Math.cos(Math.toRadians(tank2.angle))*3;
-			}
-			if(checkTankintersect(tank2, true)){
-				tank2.xx +=Math.sin(Math.toRadians(tank2.angle))*3;
+			if(checkTankintersect(tank2)){
+				tank2.yy -=Math.cos(Math.toRadians(tank2.angle))*1.5;
+				tank2.xx +=Math.sin(Math.toRadians(tank2.angle))*1.5;
+			}else{
+				tank2.yy += Math.cos(Math.toRadians(tank2.angle))*1.5;
+				tank2.xx -= Math.sin(Math.toRadians(tank2.angle))*1.5;
 			}
 		}
 		if (isKeyDown(KeyEvent.VK_DOWN)) {
-			tank2.yy -=Math.cos(Math.toRadians(tank2.angle))*2;
-			tank2.xx +=Math.sin(Math.toRadians(tank2.angle))*2;
-			if(checkTankintersect(tank2, false)){
-				tank2.yy +=Math.cos(Math.toRadians(tank2.angle))*3;
-			}
-			if(checkTankintersect(tank2, true)){
-				tank2.xx -=Math.sin(Math.toRadians(tank2.angle))*3;
+			if(checkTankintersect(tank2)){
+				tank2.yy +=Math.cos(Math.toRadians(tank2.angle))*1.5;
+				tank2.xx -=Math.sin(Math.toRadians(tank2.angle))*1.5;
+			}else{
+				tank2.yy -= Math.cos(Math.toRadians(tank2.angle))*1.5;
+				tank2.xx += Math.sin(Math.toRadians(tank2.angle))*1.5;
 			}
 		}
 		if (isKeyDown(KeyEvent.VK_SPACE) && actualTime2 > delayTime) {
@@ -154,6 +147,7 @@ public class Walls extends JFrame implements KeyListener {
 	}
 	
 	ArrayList<Wall> walls = new ArrayList<Wall>();
+	
     ArrayList<Ball> bulletCounter = new ArrayList<Ball>();
 
     
@@ -172,34 +166,23 @@ public class Walls extends JFrame implements KeyListener {
 
 		while(isPlaying) {
 			moveTank();
+			hitTank();
 			Thread.sleep(SLEEPTIME);
 		}
 	}
 
-	public void createMap(){
-		
-
-	}
-
-	public void map1(){
-		walls.add(new Wall(200,200, true));
-        walls.add(new Wall(250,200, false));
-	}
-
-	public void map2(){
-		
-	}
-
-	public void map3(){
-		
-	}
-
-	public void map4(){
-		
-	}
-
-	public void map5(){
-		
+	public void createMap() { //make the walls and add to walls arraylist
+		walls.add(new Wall(0,100, false));
+		walls.add(new Wall(0,200, false));
+		walls.add(new Wall(0,250, false));
+		walls.add(new Wall(130,100, true));
+		walls.add(new Wall(500,100, false));
+		walls.add(new Wall(350,200, true));
+		walls.add(new Wall(500,100, false));
+		walls.add(new Wall(400,250, false));
+		walls.add(new Wall(200,100, true));
+		walls.add(new Wall(250,140, false));
+		walls.add(new Wall(200,250, true));
 	}
 
     public void moveAndBounceBall(Ball b, Tank tank1, Tank tank2) {
@@ -208,31 +191,28 @@ public class Walls extends JFrame implements KeyListener {
             if (w.intersects(b) && !b.intersecting){
                 if (w.v){
                     b.vx *= -1;
-                }else{
+                }
+				else{
                     b.vy *= -1;
                 }
 				b.intersecting = true;
-            }else{
+            }
+			else{
 				b.intersecting = false;
 			}
         }
 
-		b.x += b.vx; 
-		b.y += b.vy;
+		b.xx += b.vx; 
+		b.yy += b.vy;
+		b.x= (int)b.xx;
+		b.y= (int)b.yy;
 
 		if (b.x + b.size < 0 ||b.x + b.size > PANW) {
 			b.vx *= -1; 
 		}  
-
-		// if (b.y < 0) { 
-		// 	b.vy *= -1;// bounce off the top if it's moving up
-		// 	//b.y -= b.vy; // undo the last move  <<< this may not be necessary
-		// }
-
 		if (b.y + b.size > PANH  || b.y + b.size < 0) { //bounce off bottom
 			b.vy *= -1;
-		}
-        
+		}  
 	}
 	
     class DrawingPanel extends JPanel {
@@ -240,7 +220,6 @@ public class Walls extends JFrame implements KeyListener {
 			this.setBackground(Color.LIGHT_GRAY);
 			this.setPreferredSize(new Dimension(PANW,PANH));  //remember that the JPanel size is more accurate than JFrame.
 			this.setFont(new Font("Sans Serif", Font.PLAIN, 20));
-
 		}
 		
 		@Override
@@ -248,25 +227,27 @@ public class Walls extends JFrame implements KeyListener {
 			super.paintComponent(g);
 			
 			g.setColor(Color.BLACK);
-			//g.fillRect(tank1.x, tank1.y, ship.width, ship.height);
 
-			//g.drawString("Weapon = " + bulletCounter, 30, 20);	
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			
-			g2.setStroke(new BasicStroke(2));			
-			g.drawString("Here is your drawing panel", 100,100);
-			
+			g2.setStroke(new BasicStroke(2));
+			g2.setColor(Color.RED);
+			g.drawString(blueScoreSTR,400,50);
+			g2.setColor(new Color(50, 170, 255));
+			g.drawString(redScoreSTR,450,50);
+			g2.setColor(Color.BLACK);
+
 			// Save the current transformation
 			AffineTransform oldTransform = g2.getTransform();
 
 			// Rotate the rectangle around its center
 			g2.rotate(Math.toRadians(tank1.angle), tank1.x + tank1.width/2, tank1.y + tank1.height/2);
             
-			if (tank1.img == null){
+			if (tank1.img == null) {
 				g.fillRect(tank1.x, tank1.y, tank1.width, tank1.height);
 			}
-			else{
+			else {
 				g.drawImage(tank1.img2, tank1.x, tank1.y, tank1.width, tank1.height, null);
 
 			}
@@ -283,8 +264,6 @@ public class Walls extends JFrame implements KeyListener {
 				g.drawImage(tank2.img, tank2.x, tank2.y, tank2.width, tank2.height, null);
 
 			}
-
-            //g.fillRect(tank2.x, tank2.y, tank2.width, tank2.height);
 			g2.setTransform(oldTransform);
 			
             for(Rectangle w : walls){
@@ -300,12 +279,10 @@ public class Walls extends JFrame implements KeyListener {
 	public void fire(int x, int y, double angle, boolean player1sbullet){
 		for(Ball b : bulletCounter){	
 			if (b.player1sbullet == player1sbullet && b.vx == 0 && b.vy == 0){
-				b.x=x;
-				b.y=y;
-				b.vx = Math.cos(Math.toRadians(angle))*5;
-				b.vy = Math.sin(Math.toRadians(angle))*5;
-				
-				System.out.println(Double.toString(b.vx));
+				b.vx = Math.cos(Math.toRadians(angle))*1;
+				b.vy = Math.sin(Math.toRadians(angle))*1;
+				b.xx=x+b.vx*20;
+				b.yy=y+b.vy*20;
 				break;
 			}
 		}
@@ -341,6 +318,42 @@ public class Walls extends JFrame implements KeyListener {
 		panel.repaint();
 	}
 
+	void hitTank(){
+		for(Ball bullet: bulletCounter){
+			if(bullet.intersects(tank1)){
+				System.out.println("hit");
+				bullet.xx=bullet.yy=-10;
+				bullet.vx=bullet.vy=0;
+				bullet.vx=bullet.vy=0;
+				for(Ball b : bulletCounter){
+				b.xx=b.yy=-10;
+				b.vx=b.vy=0;
+				}
+				tank1.xx = 60;
+				tank1.yy = 50;
+				tank2.xx = 400;
+				tank2.yy = 300;
+				blueScore++;
+				blueScoreSTR = "" + blueScore;
+			}
+			if(bullet.intersects(tank2)){
+				System.out.println("2");
+				bullet.xx=bullet.yy=-10;
+				bullet.vx=bullet.vy=0;
+				for(Ball b : bulletCounter){
+				b.xx=b.yy=-10;
+				b.vx=b.vy=0;
+				}
+				tank1.xx = 60;
+				tank1.yy = 50;
+				tank2.xx = 400;
+				tank2.yy = 300;
+				redScore++;
+				redScoreSTR = "" + redScore;
+			}
+		}
+	}
+
 	@Override
 	public void keyReleased(KeyEvent e) {
 		keysDown[e.getKeyCode()] = false;
@@ -362,11 +375,6 @@ public class Walls extends JFrame implements KeyListener {
 			System.out.println(e.toString());
 			JOptionPane.showMessageDialog(null, "An image failed to load: " + filename , "ERROR", JOptionPane.ERROR_MESSAGE);
 		}
-		//DEBUG
-		//if (img == null) System.out.println("null");
-		//else System.out.printf("w=%d, h=%d%n",img.getWidth(),img.getHeight());
-		
 		return img;
 	}
-
 }
