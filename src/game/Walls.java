@@ -19,24 +19,39 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import Graphics.TankGame.DrawingPanel;
+import Graphics.TankGame.Tank;
+import Graphics.TankGame.Timer1;
+
 // import Graphics.TankGame.Ball;
 // import Graphics.TankGame.Tank;
 // import Graphics.TankGame.Wall;
 
-public class AnimationAndKeys2 extends JFrame implements KeyListener, ActionListener {
+public class AnimationAndKeys2 extends JFrame implements KeyListener {
 	static final int PANW = 500;
 	static final int PANH = 400;
 	static final int SLEEPTIME = 10;	//in milliseconds
 	static final int TIMERSPEED = 10;
+	static final int delayTime = 50; 
+	int bullets = 30; // bullet counter
+
+
+	Timer animationTimer = new Timer(4, new Timer1());
+	int actualTime1 = 0;
+	int actualTime2 = 0;
 
 
 	DrawingPanel panel;
 	boolean isPlaying = true;
-	
-	void startTimer() {		
-		Timer timer = new Timer(TIMERSPEED, this);
-		timer.start();
-    }
+
+	class Timer1 implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			actualTime1++;
+			actualTime2++;
+			panel.repaint();
+		}
+	}
 
     class Ball extends Rectangle{
 		// int x,y;	//position
@@ -94,9 +109,7 @@ public class AnimationAndKeys2 extends JFrame implements KeyListener, ActionList
 	}
 	Tank tank1 = new Tank(100,100);
 	Tank tank2 = new Tank(200,200);
-	Rectangle ship = new Rectangle(tank1.x, tank1.y, tank1.width,tank1.height);
 
-	int bullet = 30; // bullet counter
 
 	void createGUI() {
 		JFrame window = new JFrame("Tank Trouble");
@@ -149,7 +162,10 @@ public class AnimationAndKeys2 extends JFrame implements KeyListener, ActionList
 				tank1.xx -=Math.sin(Math.toRadians(tank1.angle))*2;
 			}
 		}
-		if (isKeyDown(KeyEvent.VK_C)) fire(tank1.x+tank1.width/2, tank1.y+tank1.height/2, tank1.angle+90, true);
+		if (isKeyDown(KeyEvent.VK_C) && actualTime1 > delayTime) {
+			fire(tank1.x+tank1.width/2, tank1.y+tank1.height/2, tank1.angle+90, true);
+			actualTime1 = 0;
+		}
 
 		
 		if (isKeyDown(KeyEvent.VK_LEFT)) tank2.angle-=5;		
@@ -174,8 +190,10 @@ public class AnimationAndKeys2 extends JFrame implements KeyListener, ActionList
 				tank2.xx -=Math.sin(Math.toRadians(tank2.angle))*3;
 			}
 		}
-		if (isKeyDown(KeyEvent.VK_SPACE)) fire(tank2.x+tank2.width/2, tank2.y+tank2.height/2, tank2.angle+90, false);
-
+		if (isKeyDown(KeyEvent.VK_SPACE) && actualTime2 > delayTime) {
+			fire(tank2.x+tank2.width/2, tank2.y+tank2.height/2, tank2.angle+90, false);
+			actualTime2 = 0;
+		}
 
 		tank1.x = (int)tank1.xx;
 		tank1.y = (int)tank1.yy;
@@ -190,7 +208,7 @@ public class AnimationAndKeys2 extends JFrame implements KeyListener, ActionList
     
     AnimationAndKeys2() throws InterruptedException { // this exception is required for Thread.sleep()
 		createGUI();
-		startTimer();
+		animationTimer.start();
 		createMap();
 
 		for (int i = 0;i<300;i++){  // creates 30 bullets for player 1 off screen
@@ -341,12 +359,6 @@ public class AnimationAndKeys2 extends JFrame implements KeyListener, ActionList
 	@Override
 	public void keyTyped(KeyEvent e) {
 	}
-	
-	@Override
-    public void actionPerformed(ActionEvent e) {
-        // TODO Auto-generated method stub
-        panel.repaint();
-    }	  
 
 	public static void main(String[] args) throws InterruptedException {
 		new AnimationAndKeys2();
