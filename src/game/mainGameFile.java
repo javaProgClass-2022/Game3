@@ -1,4 +1,6 @@
 package game;
+//James, Tian, Decker
+//Jan 28th
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -33,7 +35,6 @@ public class Walls extends JFrame implements KeyListener {
 	static int redScore = 0;
 	static String blueScoreSTR = "0";
 	static String redScoreSTR = "0";
-	int bullets = 30; // bullet counter
 	
 
 	Timer animationTimer = new Timer(4, new Timer1());
@@ -77,7 +78,9 @@ public class Walls extends JFrame implements KeyListener {
 		window.setVisible(true);
 	}
 
+	//This method will check and see if a tank is touching any walls
 	boolean checkTankintersect(Tank tank){
+		//Cycles through all the walls
 		for(Wall w : walls){
 			if (w.intersects(tank)){
 				return true;
@@ -86,19 +89,25 @@ public class Walls extends JFrame implements KeyListener {
 		return false;
 	}
 
-	// With this method, two keys can be down at once allowing smooth diagonal movement
+	// This is what moves the tanks, two keys can be down at once allowing smooth diagonal movement
 	void moveTank() {
-		if (isKeyDown(KeyEvent.VK_A)) tank1.angle-=5;		
+		
+		//these will adjust the angle of the tank
+		if (isKeyDown(KeyEvent.VK_A)) tank1.angle-=5;	
 		if (isKeyDown(KeyEvent.VK_D)) tank1.angle+=5;
+		
+		//this will move it forward based off the angle
 		if (isKeyDown(KeyEvent.VK_W)){
-			if(checkTankintersect(tank1)){
+			if(checkTankintersect(tank1)){//if it touches a wall, move backwards
 				tank1.yy -=Math.cos(Math.toRadians(tank1.angle))*1.5;
 				tank1.xx +=Math.sin(Math.toRadians(tank1.angle))*1.5;
-			}else{
+			}else{ //otherwise move forwards
 				tank1.yy += Math.cos(Math.toRadians(tank1.angle))*1.5;
 				tank1.xx -= Math.sin(Math.toRadians(tank1.angle))*1.5;
 			}
 		}
+		
+		//same but backwards
 		if (isKeyDown(KeyEvent.VK_S)) {
 			if(checkTankintersect(tank1)){
 				tank1.yy +=Math.cos(Math.toRadians(tank1.angle))*1.5;
@@ -108,12 +117,15 @@ public class Walls extends JFrame implements KeyListener {
 				tank1.xx += Math.sin(Math.toRadians(tank1.angle))*1.5;
 			}
 		}
+		
+		//this calls the fire bullet method
 		if (isKeyDown(KeyEvent.VK_C) && actualTime1 > delayTime) {
 			fire(tank1.x+tank1.width/2, tank1.y+tank1.height/2, tank1.angle+90, true);
 			actualTime1 = 0;
 		}
 
 		
+		//same for tank2
 		if (isKeyDown(KeyEvent.VK_LEFT)) tank2.angle-=5;		
 		if (isKeyDown(KeyEvent.VK_RIGHT)) tank2.angle+=5;
 		if (isKeyDown(KeyEvent.VK_UP)){
@@ -139,6 +151,7 @@ public class Walls extends JFrame implements KeyListener {
 			actualTime2 = 0;
 		}
 
+		//converts all the doubles to ints to be painted
 		tank1.x = (int)tank1.xx;
 		tank1.y = (int)tank1.yy;
 		tank2.x = (int)tank2.xx;
@@ -147,26 +160,24 @@ public class Walls extends JFrame implements KeyListener {
 	}
 	
 	ArrayList<Wall> walls = new ArrayList<Wall>();
-	
-    ArrayList<Ball> bulletCounter = new ArrayList<Ball>();
+	ArrayList<Ball> bulletCounter = new ArrayList<Ball>();
 
-    
-    Walls() throws InterruptedException { // this exception is required for Thread.sleep()
+    	Walls() throws InterruptedException { // this exception is required for Thread.sleep()
 		createGUI();
 		animationTimer.start();
-		createMap();
+		createMap(); //creates the map
 
-		for (int i = 0;i<300;i++){  // creates 30 bullets for player 1 off screen
+		for (int i = 0;i<30;i++){  // creates 30 bullets for player 1 off screen
 			bulletCounter.add(new Ball(true));
 		}
 
-		for (int i = 0;i<300;i++){  // creates 30 bullets for player 2 off screen
+		for (int i = 0;i<30;i++){  // creates 30 bullets for player 2 off screen
 			bulletCounter.add(new Ball(false));
 		}
 
 		while(isPlaying) {
-			moveTank();
-			hitTank();
+			moveTank();//moves the tanks
+			hitTank();//checks if a tank has been hit by any bullets
 			Thread.sleep(SLEEPTIME);
 		}
 	}
@@ -185,37 +196,43 @@ public class Walls extends JFrame implements KeyListener {
 		walls.add(new Wall(200,250, true));
 	}
 
-    public void moveAndBounceBall(Ball b, Tank tank1, Tank tank2) {
+	//this will move the bullets
+	public void moveAndBounceBall(Ball b, Tank tank1, Tank tank2) {
 
+		//this will go through all the walls
 		for(Wall w : walls){
-            if (w.intersects(b) && !b.intersecting){
-                if (w.v){
-                    b.vx *= -1;
-                }
+			if (w.intersects(b) && !b.intersecting){ //will only check if the bullets is not already intersecting a wall, to stop it from going along the wall
+				//if the wall is vertical, it will reverse the bullets horizontal speed
+				if (w.v){
+				    b.vx *= -1;
+				}
+				//otherwise it will reverse the bullets vertical speed
 				else{
-                    b.vy *= -1;
-                }
-				b.intersecting = true;
-            }
+				    b.vy *= -1;
+				}
+				b.intersecting = true; //this boolean will tell it know not to check again untill it has cleared the wall
+			}
 			else{
 				b.intersecting = false;
 			}
-        }
+		}
 
-		b.xx += b.vx; 
+		b.xx += b.vx; //changes the locaton of the bullet based on the speed
 		b.yy += b.vy;
-		b.x= (int)b.xx;
+		b.x= (int)b.xx; // converts the location to int to be painted
 		b.y= (int)b.yy;
 
+		//bounce the bullet off the sides of the screen
 		if (b.x + b.size < 0 ||b.x + b.size > PANW) {
 			b.vx *= -1; 
 		}  
+		//bounce the bullet off the top and bottom of the screen
 		if (b.y + b.size > PANH  || b.y + b.size < 0) { //bounce off bottom
 			b.vy *= -1;
 		}  
 	}
 	
-    class DrawingPanel extends JPanel {
+    	class DrawingPanel extends JPanel {
 		DrawingPanel() {
 			this.setBackground(Color.LIGHT_GRAY);
 			this.setPreferredSize(new Dimension(PANW,PANH));  //remember that the JPanel size is more accurate than JFrame.
@@ -241,7 +258,7 @@ public class Walls extends JFrame implements KeyListener {
 			// Save the current transformation
 			AffineTransform oldTransform = g2.getTransform();
 
-			// Rotate the rectangle around its center
+			// Rotate the tank around its center
 			g2.rotate(Math.toRadians(tank1.angle), tank1.x + tank1.width/2, tank1.y + tank1.height/2);
             
 			if (tank1.img == null) {
@@ -252,9 +269,9 @@ public class Walls extends JFrame implements KeyListener {
 
 			}
 
-			//g.fillRect(tank1.x, tank1.y, tank1.width, tank1.height);
-			g2.setTransform(oldTransform);
+			g2.setTransform(oldTransform);//rotates it back
 
+			//draws tank 2 the same way
 			g2.rotate(Math.toRadians(tank2.angle), tank2.x + tank2.width/2, tank2.y + tank2.height/2);
 
 			if (tank1.img == null){
@@ -264,23 +281,30 @@ public class Walls extends JFrame implements KeyListener {
 				g.drawImage(tank2.img, tank2.x, tank2.y, tank2.width, tank2.height, null);
 
 			}
-			g2.setTransform(oldTransform);
+			g2.setTransform(oldTransform); 
 			
-            for(Rectangle w : walls){
-                g.fillRect(w.x, w.y, w.width, w.height);
-            }
+			//draws all the walls
+            		for(Rectangle w : walls){
+                		g.fillRect(w.x, w.y, w.width, w.height);
+            		}
+			//draws all the bullets
 			for(Ball b : bulletCounter){	
 				g.fillOval(b.x, b.y, b.width,b.height);	
-            	moveAndBounceBall(b, tank1, tank2);
+            		moveAndBounceBall(b, tank1, tank2);//moves the ball every frame
 			}
 		}
 	}
 
-	public void fire(int x, int y, double angle, boolean player1sbullet){
+	//this method will fire the bullets
+	public void fire(int x, int y, double angle, boolean player1sbullet){ //it will take in the the x and y and angle of the tank that fired it, 
+		//will cycle through all the bullets untill it finds one that is not in motion and belongs to the tank that fired it
 		for(Ball b : bulletCounter){	
 			if (b.player1sbullet == player1sbullet && b.vx == 0 && b.vy == 0){
+				//calculates the horizontal and vetical speeds of the bullet based on the angle of the tank with some trig
 				b.vx = Math.cos(Math.toRadians(angle))*1;
 				b.vy = Math.sin(Math.toRadians(angle))*1;
+				//this will give the bullet a slight head start, otherwise the bullet would be intersecting with the tank 
+				//as soon as it is fired, and the game would think it was hit
 				b.xx=x+b.vx*20;
 				b.yy=y+b.vy*20;
 				break;
@@ -318,28 +342,32 @@ public class Walls extends JFrame implements KeyListener {
 		panel.repaint();
 	}
 
+	//this cecks to see if a tank is hit by a bullet
 	void hitTank(){
+		//cycles through all the bullets
 		for(Ball bullet: bulletCounter){
-			if(bullet.intersects(tank1)){
-				System.out.println("hit");
-				bullet.xx=bullet.yy=-10;
-				bullet.vx=bullet.vy=0;
-				bullet.vx=bullet.vy=0;
+			if(bullet.intersects(tank1)){       
+// 				System.out.println("hit");
+// 				bullet.xx=bullet.yy=-10;       //teleports the bullet off screen
+// 				bullet.vx=bullet.vy=0;         //sets the speeds to zero
+// 				bullet.vx=bullet.vy=0;
 				for(Ball b : bulletCounter){
-				b.xx=b.yy=-10;
-				b.vx=b.vy=0;
+				b.xx=b.yy=-10;                 //teleports all the bullets off screen
+				b.vx=b.vy=0;		       //sets all the speeds to zero
 				}
-				tank1.xx = 60;
+				tank1.xx = 60;		       //puts both tanks back to their starting points for the next round
 				tank1.yy = 50;
 				tank2.xx = 400;
 				tank2.yy = 300;
-				blueScore++;
+				blueScore++;                   //increase the other players score
 				blueScoreSTR = "" + blueScore;
 			}
+			
+			//same for tank 2
 			if(bullet.intersects(tank2)){
-				System.out.println("2");
-				bullet.xx=bullet.yy=-10;
-				bullet.vx=bullet.vy=0;
+// 				System.out.println("2");
+// 				bullet.xx=bullet.yy=-10;
+// 				bullet.vx=bullet.vy=0;
 				for(Ball b : bulletCounter){
 				b.xx=b.yy=-10;
 				b.vx=b.vy=0;
