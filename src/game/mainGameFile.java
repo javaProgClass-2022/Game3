@@ -25,7 +25,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import java.lang.Math;
 
-public class Walls extends JFrame implements KeyListener {
+public class MainGame extends JFrame implements KeyListener {
 	
 	static final int PANW = 500;
 	static final int PANH = 400;
@@ -156,7 +156,7 @@ public class Walls extends JFrame implements KeyListener {
 	ArrayList<Wall> walls = new ArrayList<Wall>(); // arraylist that stores walls to be painted
 	ArrayList<Ball> bulletCounter = new ArrayList<Ball>(); // arraylist that stores bullets
 
-    	Walls() throws InterruptedException { // this exception is required for Thread.sleep()
+    	MainGame() throws InterruptedException { // this exception is required for Thread.sleep()
 		createGUI();
 		animationTimer.start();
 		createMap(); // creates the map
@@ -389,7 +389,7 @@ public class Walls extends JFrame implements KeyListener {
 	}
 
 	public static void main(String[] args) throws InterruptedException {
-		new Walls();
+		new MainGame();
 	}
 
 	static BufferedImage loadImage(String filename) {
