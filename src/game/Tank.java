@@ -1,4 +1,5 @@
 package game;
+//this will create the tank objects
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 class Tank extends Rectangle{
@@ -6,8 +7,8 @@ class Tank extends Rectangle{
     BufferedImage img2;
     int angle;
     int speed;
-    double xx = 100;
-    double yy = 200;
+    double xx; //position
+    double yy;
     Tank(int x, int y){
         this.xx = x;
         this.yy = y;
